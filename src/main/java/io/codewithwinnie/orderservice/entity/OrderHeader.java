@@ -2,6 +2,7 @@ package io.codewithwinnie.orderservice.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 
 @Entity
@@ -21,6 +22,9 @@ public class OrderHeader extends BaseEntity {
     private Address shippingAddress;
     @Embedded
     private Address billToAddress;
+    
+    @OneToMany(mappedBy = "orderHeader")
+    private Set<OrderLine> orderLines;
     
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -57,6 +61,14 @@ public class OrderHeader extends BaseEntity {
         return orderStatus;
     }
     
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+    
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+    
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
@@ -90,6 +102,8 @@ public class OrderHeader extends BaseEntity {
         if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) :
                     that.getBillToAddress() != null)
             return false;
+        if (getOrderLines() != null ? !getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() != null)
+            return false;
         return getOrderStatus() == that.getOrderStatus();
     }
     
@@ -99,6 +113,7 @@ public class OrderHeader extends BaseEntity {
         result = 31 * result + (getCustomerName() != null ? getCustomerName().hashCode() : 0);
         result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
         result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
+        result = 31 * result + (getOrderLines() != null ? getOrderLines().hashCode() : 0);
         result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
         return result;
     }
