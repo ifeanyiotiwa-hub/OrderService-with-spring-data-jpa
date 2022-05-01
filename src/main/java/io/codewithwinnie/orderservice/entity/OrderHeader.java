@@ -106,9 +106,11 @@ public class OrderHeader extends BaseEntity {
     @Override
     public String toString() {
         return new StringJoiner("", "\"" + OrderHeader.class.getSimpleName() + "\": {\n", "}")
+                .add("\t\"id\": \"" + getId() + "\",\n")
                 .add("\t\"customerName\": \"" + customerName + "\",\n")
                 .add("\t\"shippingAddress\": \"" + shippingAddress + "\",\n")
                 .add("\t\"billToAddress\": \"" + billToAddress + "\",\n")
+                .add("\t\"createdDate\": \"" + this.getCreatedDate() + "\",\n")
                 .add("\t\"orderStatus\": \"" + orderStatus + "\"\n")
                 .toString();
     }
