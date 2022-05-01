@@ -4,12 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class OrderHeader {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-    
+public class OrderHeader extends BaseEntity {
     private String customerName;
     
     
@@ -24,14 +19,6 @@ public class OrderHeader {
         return customerName;
     }
     
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
@@ -40,12 +27,18 @@ public class OrderHeader {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        
         OrderHeader that = (OrderHeader) o;
-        return Objects.equals(id, that.id) && Objects.equals(customerName, that.customerName);
+    
+        return getCustomerName() != null ? getCustomerName().equals(that.getCustomerName()) :
+                       that.getCustomerName() == null;
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerName);
+        int result = super.hashCode();
+        result = 31 * result + (getCustomerName() != null ? getCustomerName().hashCode() : 0);
+        return result;
     }
 }
