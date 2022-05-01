@@ -1,7 +1,11 @@
 package io.codewithwinnie.orderservice;
 
 import io.codewithwinnie.orderservice.entity.OrderHeader;
+import io.codewithwinnie.orderservice.entity.Product;
+import io.codewithwinnie.orderservice.entity.ProductStatus;
 import io.codewithwinnie.orderservice.repository.OrderHeaderRepository;
+import io.codewithwinnie.orderservice.repository.ProductRepository;
+import org.apache.catalina.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -28,24 +32,21 @@ class SdjpaOrderServiceApplicationTests {
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
     
-    OrderHeader oh, saved, fetched;
+    @Autowired
+    private ProductRepository productRepository;
     
-    @BeforeEach
-    public void setUp() {
-        oh = new OrderHeader("Test_Customer");
-    
-        saved = orderHeaderRepository.save(oh);
-        fetched = orderHeaderRepository.getById(saved.getId());
-        
-    }
     
     @Test
     void contextLoads() {
     }
     
-    @Commit
     @Test
     void testPersistDataToDataBase() {
+        OrderHeader oh = new OrderHeader("Test_Customer");
+    
+        OrderHeader saved = orderHeaderRepository.save(oh);
+        OrderHeader fetched = orderHeaderRepository.getById(saved.getId());
+        
         System.err.println(fetched);
         assertThat(saved).isNotNull();
         assertThat(fetched).isNotNull();
@@ -56,12 +57,15 @@ class SdjpaOrderServiceApplicationTests {
     }
     
     @Test
-    void testUpdateDataToDataBase() {
-    
-        fetched.setCustomerName("Test_Updated_Customer");
-        var updated = orderHeaderRepository.save(fetched);
-        System.err.println("Updated is \n" + updated + "\nFetched is\n" + fetched);
-        assertNotNull(updated.getLastUpdatedDate());
+    void testProductPersisted() {
+        Product product = new Product();
+        product.setDescription("Product Description");
+        product.setProductStatus(ProductStatus.DISCONTINUED);
         
+        Product saved = productRepository.save(product);
+        assertThat(saved).isNotNull();
+        saved.setProductStatus(ProductStatus.IN_STOCK);
+        Product fetched = productRepository.save(saved);
+        assertThat(fetched.getProductStatus()).isEqualTo(ProductStatus.IN_STOCK);
     }
 }
