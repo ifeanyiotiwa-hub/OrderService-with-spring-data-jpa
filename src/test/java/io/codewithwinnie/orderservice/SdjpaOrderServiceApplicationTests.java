@@ -34,6 +34,7 @@ class SdjpaOrderServiceApplicationTests {
         
         OrderHeader saved = orderHeaderRepository.save(oh);
         OrderHeader fetched = orderHeaderRepository.getById(saved.getId());
+        System.err.println(fetched);
         assertThat(saved).isNotNull();
         assertThat(fetched).isNotNull();
         
