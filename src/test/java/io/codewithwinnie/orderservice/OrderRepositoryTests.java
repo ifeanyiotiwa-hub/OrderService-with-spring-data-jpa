@@ -6,6 +6,7 @@ import io.codewithwinnie.orderservice.entity.Product;
 import io.codewithwinnie.orderservice.entity.ProductStatus;
 import io.codewithwinnie.orderservice.repository.OrderHeaderRepository;
 import io.codewithwinnie.orderservice.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -15,7 +16,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,18 +37,32 @@ class OrderRepositoryTests {
     @Autowired
     private ProductRepository productRepository;
     
+    private Product product;
+    
+    @BeforeEach
+    void setUp() {
+        String[] status = {"NEW", "IN_STOCK, DISCONTINUED"};
+        Product newProduct = new Product();
+        newProduct.setDescription("Test-Product");
+        newProduct.setProductStatus(ProductStatus.IN_STOCK);
+        product = productRepository.saveAndFlush(newProduct);
+    }
     
     @Test
     void testSaveOrderWithOrderLines() {
         OrderHeader orderHeader = new OrderHeader();
         orderHeader.setCustomerName("Test-Customer");
-        OrderHeader saved = orderHeaderRepository.save(orderHeader);
     
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
-        orderLine.setOrderHeader(orderHeader);
-        orderHeader.setOrderLines(Set.of(orderLine));
+        orderLine.setProduct(product);
+    
+        orderHeader.addOrderLine(orderLine);
+        OrderHeader saved = orderHeaderRepository.save(orderHeader);
         assertThat(saved.getOrderLines().size()).isEqualTo(1);
+        
+        OrderHeader fetched = orderHeaderRepository.getById(saved.getId());
+        assertThat(fetched).isNotNull();
     }
     
     @Test

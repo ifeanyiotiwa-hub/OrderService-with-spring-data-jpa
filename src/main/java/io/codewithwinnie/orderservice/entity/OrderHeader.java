@@ -1,6 +1,7 @@
 package io.codewithwinnie.orderservice.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -23,7 +24,7 @@ public class OrderHeader extends BaseEntity {
     @Embedded
     private Address billToAddress;
     
-    @OneToMany(mappedBy = "orderHeader")
+    @OneToMany(mappedBy = "orderHeader", cascade = CascadeType.PERSIST)
     private Set<OrderLine> orderLines;
     
     @Enumerated(value = EnumType.STRING)
@@ -44,6 +45,15 @@ public class OrderHeader extends BaseEntity {
     
     public OrderHeader() {
     }
+    
+    public void addOrderLine(OrderLine orderLine) {
+        if (orderLines == null) {
+            orderLines = new HashSet<>();
+        }
+        orderLines.add(orderLine);
+        orderLine.setOrderHeader(this);
+    }
+    
     
     public String getCustomerName() {
         return customerName;
