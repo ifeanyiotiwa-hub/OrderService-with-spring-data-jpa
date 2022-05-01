@@ -1,6 +1,7 @@
 package io.codewithwinnie.orderservice.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,12 +19,23 @@ public abstract class BaseEntity {
     @Column(updatable = false)
     private Timestamp createdDate;
     
+    @UpdateTimestamp
+    private Timestamp lastUpdatedDate;
+    
     public Long getId() {
         return id;
     }
     
     public Timestamp getCreatedDate() {
         return createdDate;
+    }
+    
+    public Timestamp getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+    
+    public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
     
     public void setCreatedDate(Timestamp createdDate) {
@@ -43,13 +55,17 @@ public abstract class BaseEntity {
         BaseEntity that = (BaseEntity) o;
         
         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        return getCreatedDate() != null ? getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() == null;
+        if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null)
+            return false;
+        return getLastUpdatedDate() != null ? getLastUpdatedDate().equals(that.getLastUpdatedDate()) :
+                       that.getLastUpdatedDate() == null;
     }
     
     @Override
     public int hashCode() {
         int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getCreatedDate() != null ? getCreatedDate().hashCode() : 0);
+        result = 31 * result + (getLastUpdatedDate() != null ? getLastUpdatedDate().hashCode() : 0);
         return result;
     }
 }

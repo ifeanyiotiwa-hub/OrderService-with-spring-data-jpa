@@ -111,6 +111,7 @@ public class OrderHeader extends BaseEntity {
                 .add("\t\"shippingAddress\": \"" + shippingAddress + "\",\n")
                 .add("\t\"billToAddress\": \"" + billToAddress + "\",\n")
                 .add("\t\"createdDate\": \"" + this.getCreatedDate() + "\",\n")
+                .add("\t\"lastUpdatedDate\": \"" + this.getLastUpdatedDate() + "\",\n")
                 .add("\t\"orderStatus\": \"" + orderStatus + "\"\n")
                 .toString();
     }
